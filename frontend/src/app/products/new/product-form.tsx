@@ -1,22 +1,37 @@
 "use client";
 
 import { useForm } from 'react-hook-form';
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { createProduct } from '../products.api';
+import { createProduct, updateProduct } from '../products.api';
 
-export function ProductForm() {
-    const { register, handleSubmit } = useForm();
+export function ProductForm({ product }: any) {
+    const { register, handleSubmit } = useForm({
+        defaultValues: {
+            name: product?.name,
+            description: product?.description,
+            price: product?.price,
+            image: product?.image
+        }
+    });
     const router = useRouter();
+    const params = useParams<{id:string}>();
 
     const onFormSubmit = handleSubmit(async data => {
-        await createProduct({
-            ...data,
-            price: parseFloat(data.price)
-        });
+        if (params?.id) {
+            await updateProduct(params.id, {
+                ...data,
+                price: parseFloat(data.price)
+            });
+        } else {
+            await createProduct({
+                ...data,
+                price: parseFloat(data.price)
+            });
+        }
 
         router.push('/');
         router.refresh();
@@ -45,8 +60,9 @@ export function ProductForm() {
             />
 
             <Button>
-                Create Product
+                {params?.id ? "Update" : "Create"}
             </Button>
         </form>
     )
 }
+

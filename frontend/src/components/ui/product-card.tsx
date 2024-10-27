@@ -18,6 +18,10 @@ export function ProductCard({ product }: any) {
         router.push(`/products/${productId}`)
     }
 
+    async function handleEditProduct(productId: string) {
+        router.push(`/products/${productId}/edit`);
+    }
+
     async function handleRemoveProduct(productId: string) {
         await deleteProduct(productId);
         router.refresh();
@@ -26,7 +30,8 @@ export function ProductCard({ product }: any) {
     return (
         <Card>
             <CardHeader
-            onClick={() => handleCardClick(product.id)}>
+                className="cursor-pointer"
+                onClick={() => handleCardClick(product.id)}>
                 <CardTitle className="flex justify-between">
                     {product.name}
                     <span className="text-sm font-bold text-gray-500">
@@ -40,8 +45,9 @@ export function ProductCard({ product }: any) {
 
             </CardContent>
             <CardFooter className="flex justify-between">
-                <Button>
-                    Buy
+                <Button
+                    onClick={() => handleEditProduct(product.id)}>
+                    Edit
                 </Button>
                 <Button variant="destructive"
                     onClick={() => handleRemoveProduct(product.id)}>
